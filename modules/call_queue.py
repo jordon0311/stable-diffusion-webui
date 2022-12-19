@@ -21,14 +21,15 @@ def wrap_queued_call(func):
 
 def wrap_gradio_gpu_call(func, extra_outputs=None):
     def f(*args, **kwargs):
-
+        jordonsTic = time.perf_counter()
         shared.state.begin()
 
         with queue_lock:
             res = func(*args, **kwargs)
 
         shared.state.end()
-
+        jordonsToc = time.perf_counter()
+        print(f"Call Complete in {jordonsToc - jordonsTic:0.4f} seconds")
         return res
 
     return wrap_gradio_call(f, extra_outputs=extra_outputs, add_stats=True)
